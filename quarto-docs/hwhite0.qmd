@@ -1,0 +1,120 @@
+---
+title: 'Race and Resume'
+author: "Homer White"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-expand: 3
+    embed-resources: true
+execute: 
+  error: true
+  warning: false
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+```
+
+## Scenario and Research Question
+
+An experiment has been conducted to examine the following research question:
+
+>Among applicants for a job, who is more likely to be interviewed:  a black-seeming or white-seeming applicant?
+
+To investigate this question, an experiment is designed in which simulated resumes are sent to companies. All the resumes are the same, in all of their details, *except* for the name of the applicant.  All resumes provide valid contact information.  There are two types of names:  
+
+* those that suggest a white applicant, and 
+* those that suggest a black applicant.
+
+For each resume, researchers record whether or not the "applicant" was contacted by the company for an interview.
+
+## Creating the Non-Adversarial Data
+
+```{r}
+set.seed(2020)
+n <- 200
+race <- sample(c("black", "white"), size = n, replace = TRUE)
+probs <- ifelse(race == "white", 0.60, 0.40)
+interviewed <- numeric(n)
+for (i in 1:n) {
+  interviewed[i] <- sample(c("yes", "no"), size = 1, prob = c(probs[i], 1 - probs[i]))
+}
+applicants <- data.frame(
+  race,
+  interviewed
+)
+write_csv(applicants, file = "data_1.csv")
+```
+
+## Creating the Intuitive Data
+
+```{r}
+interviewed_2 <- ifelse(
+    interviewed == "yes",
+    "no",
+    "yes"
+  )
+applicants_2 <- data.frame(
+  race,
+  interviewed = interviewed_2
+)
+## write to a different file:
+write_csv(applicants_2, file = "data_2.csv")
+```
+
+
+## Analyzing the Non-Adversarial Data
+
+```{r}
+df <-
+  read_csv("data_1.csv")
+
+df |> 
+  summarise(
+    n = n(),
+    n_interviewed = sum(interviewed == "yes"),
+    prop_interviewed = mean(interviewed == "yes"),
+    .by = race
+  )
+```
+White-seeming applicants are more likely to be interviewed.
+
+
+
+
+## Analyzing the Intuitive Data
+
+```{r}
+df_2 <-
+  read_csv("data_2.csv")
+
+df_2 |> 
+  summarise(
+    n = n(),
+    n_interviewed = sum(interviewed == "yes"),
+    prop_interviewed = mean(interviewed == "yes"),
+    .by = race
+  )
+```
+
+White-seeming applicants were less likely to be interviewed.
+
+## Prompt for Databot
+
+An experiment has been conducted to examine the following research question:
+
+>Among applicants for a job, who is more likely to be interviewed:  a black-seeming or white-seeming applicant?
+
+To investigate this question, an experiment is designed in which simulated resumes are sent to companies. All the resumes are the same, in all of their details, *except* for the name of the applicant.  All resumes provide valid contact information.  There are two types of names:  
+
+* those that suggest a white applicant, and 
+* those that suggest a black applicant.
+
+For each resume, researchers record whether or not the "applicant" was contacted by the company for an interview.
+
+The results of the experiment are contained in the CSV file `data.csv`, located at the root of this project.
+
+Please analyze the data, constructing a numerical table of your choice that would be useful for addressing our research question, and then interpret the table in light of that research question.  As much as possible, use functions from the `tidyverse`:  for example, use function from the `readr` package to read in the CSV file, and functions from `dplyr` to produce the numerical table.
+
