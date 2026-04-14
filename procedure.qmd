@@ -1,7 +1,9 @@
 ---
 title: "Procedure"
 author: "Homer White"
-format: html
+format:
+  html:
+    embed-resources: true
 ---
 
 ## `llm-eval` Directory Structure
@@ -29,10 +31,11 @@ Your additions ot the `llm-eval` repo will be entirely with the folder  `researc
 
 Make a new project in Positron, where you will conduct your evaluations.  You could call it `prompt-folder` if you like.
 
-The project will have two files:
+The project will have three files:
 
 * `context.md`
 * `data.csv`
+* `api-key.txt` (to hold your API key, in case you need to set up Databot again)
 
 ## Doing a Run
 
