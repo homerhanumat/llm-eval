@@ -1,0 +1,80 @@
+---
+title: "Procedure"
+author: "Homer White"
+format: html
+---
+
+## `llm-eval` Directory Structure
+
+* In the folder `researchers`, find the folder with your GC username.
+* In that folder, you will see five folders, with the names:
+  * `race_and_resume` (for Dr. White's scenario)
+  * `kudzu_and_diversity` (for Tyler's scenario)
+  * `study_and_success` (for Jose's scenario)
+  * `exercise_and_hr` (for Jeffren' scenario)
+  * `rock_paper_scissors` (for Mason's scenario)
+* Inside each of the above folders, there two folders:
+  * `intuitive`
+  * `nonadversarial`
+* Within each of the above two folders, there five folders:
+  * `run_1`
+  * `run_2`
+  * `run_3`
+  * `run_4`
+  * `run_5`
+  
+Your additions ot the `llm-eval` repo will be entirely with the folder  `researchers` whose name is your GC username.  Do not modify anything outside of your folder!
+  
+## Create a New Project
+
+Make a new project in Positron, where you will conduct your evaluations.  You could call it `prompt-folder` if you like.
+
+The project will have two files:
+
+* `context.md`
+* `data.csv`
+
+## Doing a Run
+
+
+Suppose you are Mason Bradley, and you want to do the first run of the nonadversarial data for the Jeffren's scenario (exercise and resting hr).
+
+* Close Databot, if it is open.
+* Open `llm-eval/jmerino.qmd`
+* Copy the prompt section, and save it your `prompt-folder` as `context.md`.
+* Run the code-chunks in `jmerino.qmd` until you have created `data_1.csv`.
+* Delete `data.csv` (if it already exists), and rename `data_1.csv` as `data.csv`.
+* Make sure that `context.md` and `data.csv` are the only two files in the folder.
+* Restart R.
+* Open Databot.  Make sure you are in a new conversation.
+* Give it this prompt:  "Carry out the instructions in the file context.md."
+* Ask to save the results of the chat.
+* Save these results to the file `researchers/mbradely/exercise_and_hr/nonadverarial/run_1` as `AGENTS.md`.
+* Create a new text file, and save it to `researchers/mbradely/exercise_and_hr/nonadverarial/run_1` as `score.txt`
+* Inside this file, write either "correct" or "incorrect", depending on whether the bot's analysis was correct or not.  Save the file.
+* Delete any new files that may now be in your project.
+
+
+Note that the only modifications you will make to the `llm-eval` repo will be in the folder with your GC username.
+
+When you do more runs of the same situation, you can repeat the above procedure, except that you don't have to change the data or the context.  But when you move to new data or a new scenario, you'll have to change things appropriately before calling up Databot.
+
+## Good Git Practice
+
+As much as possible we want to avoid having to deal with merge conflicts.  Therefore, before you do any evaluation work in your Positron project, go to `llm-eval` and in the terminal run:
+
+```sh
+git pull
+```
+
+This will bring in any changes that others have made since you last worked.
+
+Before you push any of your new work to Github, run the above command again (in case anyone else has pushed since you last did your work.  Then do the add-commit-push routine, with a meaningful commit message, such as:
+
+```sh
+git add .
+git commit -m "five runs of race and resume, nonadversarial data"
+git push
+```
+
+

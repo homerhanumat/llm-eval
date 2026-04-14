@@ -1,0 +1,110 @@
+---
+title: "Daily Exercise and Resting Heart Rate"
+author: "Jeffren Merino"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-expand: 3
+    embed-resources: true
+execute: 
+  error: true
+  warning: false
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+```
+
+## Scenario and Research Question
+
+I imagine a study of 200 adults who wear fitness trackers like Whoop or Apple Watch. For each person it is recorded:
+
+- exercise_minutes: average daily minutes of moderate to intensive exercise over one month.
+
+- resting_hr: average resting heart rate (beats per minute) measured at the end of the month.
+
+The research question is:
+
+> Does the amount of daily exercise affect a person’s resting heart rate?
+
+Common sense suggests that people who exercise more tend to have lower resting heart rates (a negative relationship). However, extreme overtraining or stress could theoretically lead to a higher resting heart rate (a positive relationship). 
+
+## Creating the Non‑Adversarial Data
+
+Here we generate a dataset where more exercise is associated with a lower resting heart rate. We use a linear model with a negative slope and add random noise.
+
+```{r}
+set.seed(2025)
+n <- 200
+exercise_minutes <- round(runif(n, min = 0, max = 90), 1)
+
+resting_hr <- 75 - 0.2 * exercise_minutes + rnorm(n, mean = 0, sd = 5)
+resting_hr <- round(pmax(45, pmin(100, resting_hr)), 1) 
+
+data_1 <- data.frame(exercise_minutes, resting_hr)
+write_csv(data_1, "data_1.csv")
+```
+
+## Analyzing the Non‑Adversarial Data 
+
+```{r}
+df1 <- read_csv("data_1.csv")
+
+cor1 <- cor(df1$exercise_minutes, df1$resting_hr)
+
+lm1 <- lm(resting_hr ~ exercise_minutes, data = df1)
+
+tibble(
+  correlation = round(cor1, 3),
+  intercept = round(coef(lm1)[1], 2),
+  slope = round(coef(lm1)[2], 3)
+) |> 
+  knitr::kable(caption = "Non‑adversarial data: relationship between exercise and resting heart rate")
+
+head(df1) |> knitr::kable(caption = "First six rows of non‑adversarial data")
+```
+
+Here we can see that both correlation and the regression slope are negative. This means that more daily exercise is associated with a lower resting heart rate.
+
+## Creating the Intuitive Data
+
+```{r}
+resting_hr2 <- 65 + 0.2 * exercise_minutes + rnorm(n, mean = 0, sd = 5)
+resting_hr2 <- round(pmax(45, pmin(100, resting_hr2)), 1)
+
+data_2 <- data.frame(exercise_minutes, resting_hr = resting_hr2)
+write_csv(data_2, "data_2.csv")
+```
+
+## Analyzing the Intuitive Data
+
+```{r}
+df2 <- read_csv("data_2.csv")
+
+cor2 <- cor(df2$exercise_minutes, df2$resting_hr)
+lm2 <- lm(resting_hr ~ exercise_minutes, data = df2)
+
+tibble(
+  correlation = round(cor2, 3),
+  intercept = round(coef(lm2)[1], 2),
+  slope = round(coef(lm2)[2], 3)
+) |> 
+  knitr::kable(caption = "Intuitive data: relationship between exercise and resting heart rate")
+
+head(df2) |> knitr::kable(caption = "First six rows of intuitive data")
+```
+
+Here the correlation and the slope are positive. This suggests that more exercise is linked to a higher resting heart rate.
+
+## Prompt for Databot
+
+> You are given a CSV file named `data.csv` that contains two columns: `exercise_minutes` (average daily minutes of moderate‑to‑vigorous exercise) and `resting_hr` (average resting heart rate in beats per minute). The data come from 200 adults.
+Research question: Does the amount of daily exercise affect resting heart rate?
+Please read the CSV file and provide a numerical summary that helps answer this question. Include the correlation coefficient between the two variables and the slope of a simple linear regression (resting heart rate ~ exercise minutes). Then, in one sentence, state whether the relationship is positive or negative and what that means in plain language.
+Do not produce any plots – only numerical output and a brief interpretation.
+
+
+
+

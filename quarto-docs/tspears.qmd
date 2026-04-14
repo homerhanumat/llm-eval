@@ -1,0 +1,146 @@
+---
+title: 'Kudzu out competing native plants'
+author: "Tyler Spears"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-expand: 3
+    embed-resources: true
+execute: 
+  error: true
+  warning: false
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+```
+
+## Data Introduction
+
+This experiment examines the relationship between kudzu coverage and native plant diversity across a set of similar forest environments. Kudzu is a fast-growing invasive vine that kills vegetation by blocking
+sunlight and out competing local species for resources.
+
+Each environment in the data set is described by two variables:
+
+- kudzu_coverage: the percentage of the ground covered by kudzu
+- diversity: a value of plant-species diversity
+
+The expected relationship is that as kudzu coverage increases,plant-species diversity decreases, because kudzu leaves less space and resources for native plants to grow.
+
+> Research question: Does greater kudzu coverage reduce plant-species
+diversity among native plants?
+
+---
+
+## Creating the Non-Adversarial Data
+
+
+```{r}
+set.seed(2020)
+n <- 200
+
+kudzu_coverage <- round(runif(n, min = 0, max = 100), 1)
+diversity      <- round(50 - 0.4 * kudzu_coverage + rnorm(n, mean = 0, sd = 5), 1)
+
+environments <- data.frame(
+  kudzu_coverage,
+  diversity
+)
+
+write_csv(environments, file = "data_1.csv")
+```
+
+## Creating the Intuitive Data
+
+Let's go for a quadratic relationship:
+
+```{r}
+
+diversity_temp <- -kudzu_coverage * (100 - kudzu_coverage) + 2600 + runif(n, min = -800, max = 800)
+
+min_div <- min(diversity_temp)
+
+if (min_div < 0) {
+  diversity_2 <- diversity_temp - min_div
+} else {
+  diversity_2 <- diversity_temp
+}
+
+environments_2 <- data.frame(
+  kudzu_coverage = environments$kudzu_coverage,
+  diversity      = diversity_2
+)
+write_csv(environments_2, "data_2.csv")
+```
+
+
+## Analyzing the Non-Adversarial Data
+
+```{r}
+df <- read_csv("data_1.csv")
+
+df |>
+  mutate(kudzu_level = ifelse(kudzu_coverage >= 50, "high", "low")) |>
+  summarise(
+    n              = n(),
+    mean_diversity = round(mean(diversity), 2),
+    min_diversity  = round(min(diversity),  2),
+    max_diversity  = round(max(diversity),  2),
+    .by = kudzu_level
+  )
+```
+
+The summary confirms the expected pattern. This helps show that kudzu out competes and take native plants resources.
+
+
+## Analyzing the Intuitive Data
+
+```{r}
+df_2 <- read_csv("data_2.csv")
+
+df_2 |>
+  mutate(kudzu_level = ifelse(kudzu_coverage >= 50, "high", "low")) |>
+  summarise(
+    n              = n(),
+    mean_diversity = round(mean(diversity), 2),
+    min_diversity  = round(min(diversity),  2),
+    max_diversity  = round(max(diversity),  2),
+    .by = kudzu_level
+  )
+```
+
+But there is a non-linear relationship between the variables:
+
+```{r}
+df_2 |> 
+  ggplot(aes(x = kudzu_coverage, y = diversity)) +
+  geom_point()
+```
+---
+
+## Prompt for Databot
+
+ A study has been conducted to examine the following research question:
+
+ Does the presence of kudzu an invasive vine reduce plant-species
+ diversity in forest environments?
+
+To investigate this question, researchers surveyed 200 forest environments. 
+All environments were of a similar type, differing primarily in how much of their ground was covered by kudzu. 
+For each environment, two measurements were recorded:
+
+ - kudzu_coverage: the percentage of the ground covered by kudzu
+   (a number between 0 and 100)
+ - diversity: a value of plant-species diversity, where higher
+   values indicate a greater variety of native plant species
+
+The results of the study are contained in the CSV file data.csv, located
+at the root of this project.
+
+Please analyze the data, constructing a numerical table of your choice that
+would be useful for addressing the research question, and then interpret the
+table in light of that research question. As much as possible, use functions
+from the `tidyverse`: for example, use functions from the `readr` package to
+read in the CSV file, and functions from `dplyr` to produce the numerical table.

@@ -1,0 +1,110 @@
+---
+title: "Study Hours and Course Passing in Engineering"
+author: "Jose Acuna"
+date: today
+format:
+  html:
+    toc: true
+    theme: cosmo
+    code-fold: false
+---
+
+## Introduction
+
+I imagine a study conducted at the Universidad Autónoma del Caribe, in the Engineering program in Barranquilla, Colombia. Two hundred students enrolled in a first semester Calculus course are tracked throughout the semester. For each student, we record the average number of hours per week they dedicated to studying outside of class, and whether they passed the course or not.
+
+The research question is:
+
+> **Are Engineering students at the Universidad Autónoma del Caribe who study more hours per week more likely to pass their Calculus course?**
+
+## Creating the Non-Adversarial Data
+
+In the first semester of 2022, the Calculus course was taught in a traditional format with weekly problem sets and office hours. In this setting, students who put in more hours of study outside class had a genuine advantage: they practiced more problems, attended tutoring sessions, and built stronger foundations. The probability of passing increases with hours studied, modeled here using a logistic function.
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+
+set.seed(2020)
+n <- 200
+
+hours <- round(runif(n, min = 1, max = 15), 1)
+
+log_odds <- -4 + 0.55 * hours
+prob_pass <- exp(log_odds) / (1 + exp(log_odds))
+
+passed <- ifelse(runif(n) < prob_pass, "yes", "no")
+
+students <- data.frame(hours_per_week = hours, passed = passed)
+write_csv(students, file = "data_1.csv")
+```
+
+## Analyzing the Non-Adversarial Data
+
+```{r}
+#| message: false
+df <- read_csv("data_1.csv")
+
+df |>
+  mutate(hours_group = cut(hours_per_week,
+                           breaks = c(0, 5, 10, 15),
+                           labels = c("1-5 hrs", "6-10 hrs", "11-15 hrs"))) |>
+  summarise(
+    n = n(),
+    n_passed = sum(passed == "yes"),
+    prop_passed = mean(passed == "yes"),
+    .by = hours_group
+  ) |>
+  arrange(hours_group)
+```
+
+Students who study more hours per week are more likely to pass Calculus. The proportion passing increases steadily across the three groups exactly what we would expect.
+
+## Creating the Intuitive Data
+
+In the first semester of 2023, the same Calculus course was offered at the Universidad Autónoma del Caribe, but under a very different dynamic. That year, many students who enrolled in Engineering had already completed a pre calculus preparation course in high school and arrived with a solid mathematical background. These students found the course material manageable and did not need to study many hours outside of class. On the other hand, students who struggled with the content spent many more hours trying to keep up  but their weaker foundation meant that extra effort did not always translate into passing. As a result, the students who studied the most hours were often those who were already behind, and the students who studied fewer hours were those who already knew the material well. The probability of passing now decreases with hours studied.
+
+```{r}
+log_odds_2 <- 4 - 0.55 * hours
+
+prob_pass_2 <- exp(log_odds_2) / (1 + exp(log_odds_2))
+
+passed_2 <- ifelse(runif(n) < prob_pass_2, "yes", "no")
+
+students_2 <- data.frame(hours_per_week = hours, passed = passed_2)
+write_csv(students_2, file = "data_2.csv")
+```
+
+## Analyzing the Intuitive Data
+
+```{r}
+#| message: false
+df_2 <- read_csv("data_2.csv")
+
+df_2 |>
+  mutate(hours_group = cut(hours_per_week,
+                           breaks = c(0, 5, 10, 15),
+                           labels = c("1-5 hrs", "6-10 hrs", "11-15 hrs"))) |>
+  summarise(
+    n = n(),
+    n_passed = sum(passed == "yes"),
+    prop_passed = mean(passed == "yes"),
+    .by = hours_group
+  ) |>
+  arrange(hours_group)
+```
+
+Students who study more hours per week are less likely to pass the course. This result is explained by a confounding variable: prior mathematical preparation. Students who arrived with a strong background needed fewer hours to pass, while students with weaker preparation studied more but still failed at higher rates. The extra hours reflect struggle, not effort that pays off.
+
+## The Prompt
+
+Here is the prompt I would give to Databot for each situation:
+
+---
+
+*Two hundred Engineering students at a large university in South America, enrolled in a first semester Calculus course, were tracked throughout the semester. For each student, we recorded the average number of hours per week they studied outside of class, and whether they passed the course or not (yes/no). The data is in a CSV file called data.csv, with two columns: `hours_per_week` (a numeric variable) and `passed` (a character variable with values "yes" or "no").*
+
+*The research question is: Are students who study more hours per week more likely to pass the Calculus course?*
+
+*Please create an appropriate numerical summary of the data that can be used to address this research question. Then, based on that summary, answer the research question.*
