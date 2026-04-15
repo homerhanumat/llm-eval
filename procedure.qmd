@@ -48,10 +48,10 @@ Suppose you are Mason Bradley, and you want to do the first run of the nonadvers
 * Run the code-chunks in `jmerino.qmd` until you have created `data_1.csv`.
 * Delete `data.csv` (if it already exists), and rename `data_1.csv` as `data.csv`.
 * Make sure that `context.md` and `data.csv` are the only two files in the folder.
-* Restart R.
+* Delete your R session (use trash can icon) and start a new R session.
 * Open Databot.  Make sure you are in a new conversation.
 * Give it this prompt:  "Carry out the instructions in the file context.md."
-* Ask to save the results of the chat.
+* Ask to save the results of the chat (with `\savememory`).
 * Save these results to the file `researchers/mbradely/exercise_and_hr/nonadverarial/run_1` as `AGENTS.md`.
 * Create a new text file, and save it to `researchers/mbradely/exercise_and_hr/nonadverarial/run_1` as `score.txt`
 * Inside this file, write either "correct" or "incorrect", depending on whether the bot's analysis was correct or not.  Save the file.
