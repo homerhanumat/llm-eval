@@ -176,6 +176,22 @@ df_aug_2 |>
   count(opponent)
 ```
 
+Does the distribution of choice by opponent depend on the choice made by the player?  Let's investigate:
+
+```{r}
+df_aug_2 |> 
+  count(selections, opponent)
+```
+
+Let's see if there is statistically significant evidence that the two choices are related:
+
+```{r}
+chisq.test(df_aug_2$selections, df_aug_2$opponent)
+```
+
+Essentially no evidence for a relationship.  So if someone woudl to infer that opponents are just choosing to play scissors more, then they would be correct.
+
+
 ## Prompt for Databot
 
 An experiment has been conducted with the following research question:
