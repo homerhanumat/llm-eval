@@ -69,3 +69,67 @@ df_aug <-
 mod <- glm(win ~ selections, data = df_aug, family = "binomial")
 summary(mod)
 ```
+Scissors has a bit higher winning ratio, but it doesn't seem to be statistically significant.
+
+## Creating the Intuitive Data
+
+```{r}
+set.seed(2020)
+n <- 300
+p_rock <- c(0.6, 0.2, 0.2)
+p_paper <- c(0.2, 0.6, 0.2)
+p_scissors <- c(0.2, 0.2, 0.6)
+selections <- sample(c("rock", "paper", "scissors"), size = n, replace = TRUE)
+outcome <- character(n)
+for (i in 1:n) {
+  if(selections[i] == "rock") {
+    outcome[i] <- sample(c("W", "L", "T"), size = 1, prob = p_rock)
+  }
+  if(selections[i] == "paper") {
+    outcome[i] <- sample(c("W", "L", "T"), size = 1, prob = p_paper)
+  }
+  if(selections[i] == "scissors") {
+    outcome[i] <- sample(c("W", "L", "T"), size = 1, prob = p_scissors)
+  }
+}
+rps_tournament2 <- data.frame(
+  selections,
+  outcome
+)
+
+
+write_csv(rps_tournament2, file = "data_2.csv")
+```
+
+
+## Analyzing the Non-Adversarial Data
+
+```{r}
+df <-
+  read_csv("data_2.csv")
+
+df |> 
+  summarise(
+    n = n(),
+    wins = sum(outcome == "W"),
+    losses = sum(outcome == "L"),
+    ties = sum(outcome == "T"),
+    win_ratio = mean(outcome == "W"),
+    .by = selections
+  )
+
+```
+
+Out of all of the potential options, rock results in a win much more frequently than the other options. 
+
+## Prompt for Databot
+
+An experiment has been conducted with the following research question:
+
+>What is the best, first move to play against a random person:  rock, paper, or scissors?
+
+An experiment is designed where a man plays 300 games of Rock, Paper, Scissors. He plays each game in rounds, one after the other with a new, random person each time. Naturally, he can only play rock, paper, or scissors. During the experiment, the man's selections are recorded as well as the outcome of that selection whether it was a win, loss, or tie. It should be noted that his opponent's selections and outcomes are not explicitly recorded and can only be found through analyzing the data recorded from the man.
+
+The results of the experiment are contained in the CSV file `data.csv`, located at the root of this project.
+
+Please analyze the data, constructing a numerical table of your choice that would be useful for addressing our research question, and then interpret the table in light of that research question.  As much as possible, use functions from the `tidyverse`:  for example, use function from the `readr` package to read in the CSV file, and functions from `dplyr` to produce the numerical table.
