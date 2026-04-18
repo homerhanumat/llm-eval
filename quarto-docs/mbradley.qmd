@@ -71,6 +71,35 @@ summary(mod)
 ```
 Scissors has a bit higher winning ratio, but it doesn't seem to be statistically significant.
 
+Let's infer what choices the opponents made:
+
+```{r}
+df_aug_2 <-
+  df |>
+  mutate(opponent = case_when(
+    selections == "rock" & outcome == "L" ~ "paper",
+    selections == "rock" & outcome == "W" ~ "scissors",
+    selections == "rock" & outcome == "T" ~ "rock",
+    selections == "paper" & outcome == "L" ~ "scissors",
+    selections == "paper" & outcome == "W" ~ "rock",
+    selections == "paper" & outcome == "T" ~ "paper",
+    selections == "scissors" & outcome == "L" ~ "rock",
+    selections == "scissors" & outcome == "W" ~ "paper",
+    selections == "scissors" & outcome == "T" ~ "scissors"
+  ))
+```
+
+Find distribution of choices made by opponents:
+
+```{r}
+df_aug_2 |> 
+  count(opponent)
+```
+
+If someone were to infer that opponents tended to choose "paper" somewhat disporportionately, they would not be wrong.
+
+
+
 ## Creating the Intuitive Data
 
 ```{r}
@@ -121,6 +150,31 @@ df |>
 ```
 
 Out of all of the potential options, rock results in a win much more frequently than the other options. 
+
+Infer choices made by opponents:
+
+```{r}
+df_aug_2 <-
+  df |>
+  mutate(opponent = case_when(
+    selections == "rock" & outcome == "L" ~ "paper",
+    selections == "rock" & outcome == "W" ~ "scissors",
+    selections == "rock" & outcome == "T" ~ "rock",
+    selections == "paper" & outcome == "L" ~ "scissors",
+    selections == "paper" & outcome == "W" ~ "rock",
+    selections == "paper" & outcome == "T" ~ "paper",
+    selections == "scissors" & outcome == "L" ~ "rock",
+    selections == "scissors" & outcome == "W" ~ "paper",
+    selections == "scissors" & outcome == "T" ~ "scissors"
+  ))
+```
+
+Find distribution of choices made by opponents:
+
+```{r}
+df_aug_2 |> 
+  count(opponent)
+```
 
 ## Prompt for Databot
 
