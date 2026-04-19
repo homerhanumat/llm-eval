@@ -131,7 +131,7 @@ write_csv(rps_tournament2, file = "data_2.csv")
 ```
 
 
-## Analyzing the Non-Adversarial Data
+## Analyzing the Intuitive Data
 
 ```{r}
 df <-
@@ -154,7 +154,7 @@ Out of all of the potential options, rock results in a win much more frequently 
 Infer choices made by opponents:
 
 ```{r}
-df_aug_2 <-
+df_aug <-
   df |>
   mutate(opponent = case_when(
     selections == "rock" & outcome == "L" ~ "paper",
@@ -172,24 +172,22 @@ df_aug_2 <-
 Find distribution of choices made by opponents:
 
 ```{r}
-df_aug_2 |> 
+df_aug |> 
   count(opponent)
 ```
 
 Does the distribution of choice by opponent depend on the choice made by the player?  Let's investigate:
 
 ```{r}
-df_aug_2 |> 
-  count(selections, opponent)
+tab <- table(df_aug$selections, df_aug$opponent)
+tab
 ```
 
 Let's see if there is statistically significant evidence that the two choices are related:
 
 ```{r}
-chisq.test(df_aug_2$selections, df_aug_2$opponent)
+chisq.test(tab)
 ```
-
-Essentially no evidence for a relationship.  So if someone woudl to infer that opponents are just choosing to play scissors more, then they would be correct.
 
 
 ## Prompt for Databot
