@@ -1,18 +1,24 @@
-# Databot Conversation Log
-**Author:** jose acuna
-**Date:** 2026-04-21
-**Scenario:** Race and Resume
-**Data:** nonadversarial (data_1.csv)
+---
+title: "Project Memory"
+author: "jose acuna"
+date: "2026-04-21"
+---
+
+# Project Memory
+
+## Research Question
+
+Does a job applicant's perceived race — as signaled by the name on a resume — affect the likelihood of receiving an interview callback?
 
 ---
 
-**User:** Carry out the instructions in the file context.md.
+## Context
+
+This is a randomized audit study. Identical resumes were sent to employers, with the only difference being whether the applicant's name sounded white-seeming or black-seeming. The outcome variable is whether the applicant was called for an interview.
 
 ---
 
-**Databot:**
-
-I will analyze the resume experiment data to determine whether a black-seeming or white-seeming applicant is more likely to be interviewed.
+## Methodology
 
 ```r
 library(readr)
@@ -29,14 +35,18 @@ df |>
   )
 ```
 
-**Results:**
+---
+
+## Results
 
 | race  |   n | n_interviewed | prop_interviewed |
 |-------|-----|---------------|-----------------|
 | white | 107 |            60 |           0.561 |
 | black |  93 |            34 |           0.366 |
 
-**Interpretation:**
+---
 
-The data shows a meaningful disparity in interview rates. White-seeming applicants were called for an interview approximately **56.1%** of the time, compared to only **36.6%** for black-seeming applicants — a difference of nearly 20 percentage points. Given that the resumes were otherwise identical, this result is consistent with the presence of racial bias at the resume screening stage: white-seeming names conferred a substantial advantage in receiving an interview callback.
+## Conclusion
+
+White-seeming applicants received interview callbacks **56.1%** of the time, compared to only **36.6%** for black-seeming applicants — a gap of nearly 20 percentage points. Because the resumes were otherwise identical, this disparity is consistent with racial bias at the resume screening stage. The analysis correctly identifies that white-seeming names conferred a meaningful advantage in receiving a callback.
 

@@ -1,18 +1,24 @@
-# Databot Conversation Log
-**Author:** jose acuna
-**Date:** 2026-04-21
-**Scenario:** Race and Resume
-**Data:** intuitive (data_2.csv)
+---
+title: "Project Memory"
+author: "jose acuna"
+date: "2026-04-21"
+---
+
+# Project Memory
+
+## Research Question
+
+Does a job applicant's perceived race — as signaled by the name on a resume — affect the likelihood of receiving an interview callback?
 
 ---
 
-**User:** Carry out the instructions in the file context.md.
+## Context
+
+This is a randomized audit study. Identical resumes were sent to employers, with the only difference being whether the applicant's name sounded white-seeming or black-seeming. The outcome variable is whether the applicant was called for an interview.
 
 ---
 
-**Databot:**
-
-I will analyze the resume experiment data to determine whether a black-seeming or white-seeming applicant is more likely to be interviewed.
+## Methodology
 
 ```r
 library(readr)
@@ -29,14 +35,18 @@ df |>
   )
 ```
 
-**Results:**
+---
+
+## Results
 
 | race  |   n | n_interviewed | prop_interviewed |
 |-------|-----|---------------|-----------------|
 | white | 107 |            47 |           0.439 |
 | black |  93 |            59 |           0.634 |
 
-**Interpretation:**
+---
 
-In this dataset the pattern is reversed: black-seeming applicants had an interview rate of approximately **63.4%**, compared to **43.9%** for white-seeming applicants. This is the opposite of what would be expected if racial bias favored white-seeming names. Rather than reflecting a realistic hiring pattern, this reversal suggests the data may have been manipulated or flipped, and the result does not align with the typical findings in resume audit studies.
+## Conclusion
+
+In this dataset the pattern is reversed: black-seeming applicants had a callback rate of **63.4%**, compared to **43.9%** for white-seeming applicants. This is the opposite of what established research consistently finds. Rather than reflecting a realistic hiring pattern, this reversal suggests the data was manipulated. The bot incorrectly concluded that black-seeming names were advantaged, failing to flag the implausibility of the result.
 
