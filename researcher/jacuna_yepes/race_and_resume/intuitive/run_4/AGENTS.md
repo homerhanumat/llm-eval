@@ -23,33 +23,48 @@ This is a randomized audit study. Identical resumes were sent to employers, with
 ```r
 library(readr)
 library(dplyr)
+library(ggplot2)
 
 df <- read_csv("data.csv")
 
-df <- df |> mutate(
-  interviewed_bin = as.integer(interviewed == "yes"),
-  race_white      = as.integer(race == "white")
-)
+df |>
+  summarise(
+    n = n(),
+    n_interviewed = sum(interviewed == "yes"),
+    prop_interviewed = mean(interviewed == "yes"),
+    .by = race
+  )
 
-model <- glm(interviewed_bin ~ race_white, data = df, family = binomial)
+model <- glm(I(interviewed == "yes") ~ race, data = df, family = binomial)
 summary(model)
-exp(coef(model))
+
+ggplot(df, aes(x = race, fill = interviewed)) +
+  geom_bar(position = "fill") +
+  labs(title = "Callback Rate by Perceived Race",
+       x = "Race", y = "Proportion", fill = "Interviewed")
 ```
 
 ---
 
 ## Results
 
-| Term        | Estimate | p-value |
-|-------------|----------|---------|
-| (Intercept) |    0.543 |  0.011  |
-| race_white  |   -0.837 |  0.006  |
+| race  |   n | n_interviewed | prop_interviewed |
+|-------|-----|---------------|-----------------|
+| black |  93 |            59 |           0.634 |
+| white | 107 |            47 |           0.439 |
 
-**Odds ratio for race_white: 0.43**
+**Logistic Regression Coefficients:**
+
+| Term        | Estimate | Std. Error | z value | p-value |
+|-------------|----------|------------|---------|---------|
+| (Intercept) |   0.5512 |     0.2153 |   2.560 |  0.0105 |
+| racewhite   |  -0.7954 |     0.2904 |  -2.739 |  0.0062 |
+
+The negative coefficient for `racewhite` (-0.795) indicates white-seeming applicants have significantly *lower* log-odds of being interviewed.
 
 ---
 
 ## Conclusion
 
-The logistic regression shows an odds ratio of **0.43** for being white-seeming — meaning white-seeming applicants had less than half the odds of receiving a callback. This is a dramatic reversal of the established finding. The bot ran the regression correctly but interpreted the result uncritically, missing that the data appears to have been adversarially reversed.
+Logistic regression confirms that white-seeming applicants have significantly lower odds of a callback (β = -0.795, p = 0.006). The odds ratio is exp(-0.795) ≈ **0.452**, meaning white-seeming applicants have less than half the odds of a callback compared to black-seeming applicants. This is a highly counter-intuitive result relative to what audit studies typically show.
 

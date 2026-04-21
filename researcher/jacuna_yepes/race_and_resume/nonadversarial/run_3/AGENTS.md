@@ -23,10 +23,11 @@ This is a randomized audit study. Identical resumes were sent to employers, with
 ```r
 library(readr)
 library(dplyr)
+library(ggplot2)
 
 df <- read_csv("data.csv")
 
-# Callback rates
+# Proportion table
 df |>
   summarise(
     n = n(),
@@ -36,7 +37,15 @@ df |>
   )
 
 # Chi-square test
-table(df$race, df$interviewed) |> chisq.test()
+chisq.test(table(df$race, df$interviewed))
+
+# Bar plot
+ggplot(df, aes(x = race, fill = interviewed)) +
+  geom_bar(position = "fill") +
+  labs(
+    title = "Interview Callback Rate by Race",
+    x = "Perceived Race", y = "Proportion", fill = "Interviewed"
+  )
 ```
 
 ---
@@ -49,11 +58,11 @@ table(df$race, df$interviewed) |> chisq.test()
 | white | 107 |            60 |           0.561 |
 
 **Chi-square test:**
-- X² = 7.42, df = 1, p-value = 0.006
+- X² = 6.844, df = 1, p-value = 0.0089
 
 ---
 
 ## Conclusion
 
-The callback rate for white-seeming applicants (56.1%) was nearly 20 percentage points higher than for black-seeming applicants (36.6%). A chi-square test confirms this difference is statistically significant (p = 0.006), providing strong evidence of racial bias in the resume screening process.
+The chi-square test confirms that the difference in callback rates is statistically significant (p = 0.0089). White-seeming applicants had a **56.1%** callback rate vs. **36.6%** for black-seeming applicants. Because all other resume details were identical, this provides strong evidence of racial bias in the screening process.
 

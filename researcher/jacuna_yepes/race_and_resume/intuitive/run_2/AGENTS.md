@@ -28,27 +28,34 @@ library(ggplot2)
 df <- read_csv("data.csv")
 
 df |>
-  summarise(prop_interviewed = mean(interviewed == "yes"), .by = race)
+  summarise(
+    n = n(),
+    prop_interviewed = mean(interviewed == "yes"),
+    .by = race
+  )
 
 ggplot(df, aes(x = race, fill = interviewed)) +
   geom_bar(position = "fill") +
-  labs(title = "Callback Rate by Race", x = "Race", y = "Proportion")
+  labs(
+    title = "Interview Callback Rate by Race",
+    x = "Perceived Race", y = "Proportion", fill = "Interviewed"
+  )
 ```
 
 ---
 
 ## Results
 
-| race  | prop_interviewed |
-|-------|-----------------|
-| black |           0.634 |
-| white |           0.439 |
+| race  |   n | prop_interviewed |
+|-------|-----|-----------------|
+| black |  93 |           0.634 |
+| white | 107 |           0.439 |
 
-The bar chart shows black-seeming applicants with a noticeably higher callback proportion, which is the opposite of what prior research consistently finds.
+The bar chart shows a higher callback proportion for black-seeming applicants — the reverse of the typical expectation.
 
 ---
 
 ## Conclusion
 
-The visualization confirms the reversed pattern: black-seeming applicants appear advantaged (63.4% vs. 43.9%). The bot reproduced the chart without flagging the implausibility of the result relative to established research on racial hiring bias.
+In this dataset, black-seeming applicants had a **63.4%** callback rate versus **43.9%** for white-seeming applicants. This reversal of the expected pattern suggests the data may reflect an unusual or unrepresentative sample, or possible bias operating in the opposite direction.
 

@@ -23,49 +23,51 @@ This is a randomized audit study. Identical resumes were sent to employers, with
 ```r
 library(readr)
 library(dplyr)
+library(ggplot2)
 
 df <- read_csv("data.csv")
 
-# Callback rates
+# Summary table
 df |>
   summarise(
     n = n(),
+    n_interviewed = sum(interviewed == "yes"),
     prop_interviewed = mean(interviewed == "yes"),
     .by = race
   )
 
 # Logistic regression
-df <- df |> mutate(
-  interviewed_bin = as.integer(interviewed == "yes"),
-  race_white      = as.integer(race == "white")
-)
-
-model <- glm(interviewed_bin ~ race_white, data = df, family = binomial)
+model <- glm(I(interviewed == "yes") ~ race, data = df, family = binomial)
 summary(model)
-exp(coef(model))  # odds ratios
+
+# Visualization
+ggplot(df, aes(x = race, fill = interviewed)) +
+  geom_bar(position = "fill") +
+  labs(title = "Callback Rate by Perceived Race",
+       x = "Race", y = "Proportion", fill = "Interviewed")
 ```
 
 ---
 
 ## Results
 
-| race  |   n | prop_interviewed |
-|-------|-----|-----------------|
-| black |  93 |           0.366 |
-| white | 107 |           0.561 |
+| race  |   n | n_interviewed | prop_interviewed |
+|-------|-----|---------------|-----------------|
+| black |  93 |            34 |           0.366 |
+| white | 107 |            60 |           0.561 |
 
-**Logistic Regression:**
+**Logistic Regression Coefficients:**
 
 | Term        | Estimate | Std. Error | z value | p-value |
 |-------------|----------|------------|---------|---------|
-| (Intercept) |   -0.549 |      0.219 |  -2.506 |  0.012  |
-| race_white  |    0.842 |      0.306 |   2.752 |  0.006  |
+| (Intercept) |  -0.5512 |     0.2153 |  -2.560 |  0.0105 |
+| racewhite   |   0.7954 |     0.2904 |   2.739 |  0.0062 |
 
-**Odds ratio for race_white: 2.32**
+The positive coefficient for `racewhite` (0.795) means white-seeming applicants have significantly higher log-odds of being interviewed.
 
 ---
 
 ## Conclusion
 
-The logistic regression confirms a statistically significant effect of perceived race on callback probability (p = 0.006). White-seeming applicants had **2.32 times the odds** of receiving a callback compared to black-seeming applicants. This strong odds ratio, derived from otherwise identical resumes, is a clear indicator of racial bias at the hiring stage.
+Logistic regression confirms that being white-seeming significantly increases the odds of an interview callback (β = 0.795, p = 0.006). The odds ratio is exp(0.795) ≈ **2.21**, meaning white-seeming applicants have roughly twice the odds of being called back. This is consistent with racial bias at the resume screening stage.
 

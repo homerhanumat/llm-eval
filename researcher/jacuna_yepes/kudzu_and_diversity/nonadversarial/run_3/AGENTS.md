@@ -14,7 +14,7 @@ Does the presence of kudzu (an invasive vine) reduce plant-species diversity in 
 
 ## Context
 
-Kudzu (*Pueraria montana*) is an aggressive invasive species known to blanket forest understories. This dataset records kudzu coverage percentage and a diversity index across 200 forest sites.
+Researchers surveyed 200 forest environments, recording the percentage of ground covered by kudzu and a plant-species diversity index. Higher diversity values indicate a greater variety of native plant species.
 
 ---
 
@@ -23,39 +23,47 @@ Kudzu (*Pueraria montana*) is an aggressive invasive species known to blanket fo
 ```r
 library(readr)
 library(dplyr)
+library(ggplot2)
 
 df <- read_csv("data.csv")
 
-# Group comparison
+# Summary by kudzu level
 df |>
   mutate(kudzu_level = ifelse(kudzu_coverage >= 50, "high", "low")) |>
   summarise(
-    n = n(),
+    n              = n(),
     mean_diversity = round(mean(diversity), 2),
-    sd_diversity   = round(sd(diversity), 2),
+    min_diversity  = round(min(diversity),  2),
+    max_diversity  = round(max(diversity),  2),
     .by = kudzu_level
   )
 
 # t-test
-high <- df$diversity[df$kudzu_coverage >= 50]
 low  <- df$diversity[df$kudzu_coverage <  50]
-t.test(high, low)
+high <- df$diversity[df$kudzu_coverage >= 50]
+t.test(low, high)
+
+# Scatter plot
+ggplot(df, aes(x = kudzu_coverage, y = diversity)) +
+  geom_point(alpha = 0.4) +
+  labs(title = "Kudzu Coverage vs. Plant Diversity",
+       x = "Kudzu Coverage (%)", y = "Diversity Index")
 ```
 
 ---
 
 ## Results
 
-| kudzu_level |   n | mean_diversity | sd_diversity |
-|-------------|-----|----------------|--------------|
-| high        | 106 |          19.83 |        10.21 |
-| low         |  94 |          39.84 |         9.87 |
+| kudzu_level |   n | mean_diversity | min_diversity | max_diversity |
+|-------------|-----|----------------|---------------|---------------|
+| high        | 106 |          19.83 |          -1.6 |          42.4 |
+| low         |  94 |          39.84 |          20.2 |          58.5 |
 
-**Welch t-test:** t = -13.8, df = 197, p < 0.001
+**Welch two-sample t-test:** t = 28.9, df = 196.4, **p < 2.2e-16**
 
 ---
 
 ## Conclusion
 
-The t-test confirms the group difference is highly significant (p < 0.001). Sites with high kudzu coverage have a mean diversity nearly 20 points lower than low-coverage sites, with comparable variability in both groups. This strongly supports the hypothesis that kudzu suppresses native plant diversity.
+The difference in mean diversity between low-kudzu (39.84) and high-kudzu (19.83) environments is highly statistically significant (p < 0.001). This strongly supports the hypothesis that greater kudzu coverage is associated with reduced plant diversity.
 

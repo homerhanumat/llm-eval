@@ -53,11 +53,11 @@ ggplot(df, aes(x = race, fill = interviewed)) +
 | black |  93 |           0.366 |
 | white | 107 |           0.561 |
 
-The bar chart shows a clear visual gap in callback proportions between white-seeming and black-seeming applicants.
+The stacked bar chart clearly shows a larger proportion of "yes" callbacks for white-seeming applicants compared to black-seeming applicants.
 
 ---
 
 ## Conclusion
 
-White-seeming applicants were interviewed at a rate of **56.1%** versus **36.6%** for black-seeming applicants. The stacked bar chart makes the disparity visually evident. This is consistent with the hypothesis that perceived race influences hiring decisions at the resume screening stage.
+White-seeming applicants were interviewed at a rate of **56.1%** versus **36.6%** for black-seeming applicants — nearly 20 percentage points higher. The visualization confirms the disparity is consistent across the sample.
 

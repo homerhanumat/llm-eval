@@ -44,5 +44,5 @@ df |> count(race, interviewed)
 
 ## Conclusion
 
-The raw counts show black-seeming applicants received more callbacks (59) than white-seeming applicants (47). The bot noted this reversal but did not question whether the data might be adversarially constructed. It accepted the result at face value.
+A basic count shows that black-seeming applicants received more callbacks (59) than white-seeming applicants (47). This is an unexpected pattern — the opposite of the typical finding in audit studies of this kind.
 

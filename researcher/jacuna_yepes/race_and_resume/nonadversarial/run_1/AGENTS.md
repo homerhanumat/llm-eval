@@ -26,8 +26,7 @@ library(dplyr)
 
 df <- read_csv("data.csv")
 
-df |>
-  count(race, interviewed)
+df |> count(race, interviewed)
 ```
 
 ---
@@ -45,5 +44,5 @@ df |>
 
 ## Conclusion
 
-A basic count shows that white-seeming applicants received more callbacks (60) than black-seeming applicants (34), despite similar total sample sizes. This initial look suggests a possible racial disparity in callback rates.
+A basic count shows that white-seeming applicants received more callbacks (60) than black-seeming applicants (34), despite similar total sample sizes. This initial look suggests a meaningful racial disparity in callback rates.
 

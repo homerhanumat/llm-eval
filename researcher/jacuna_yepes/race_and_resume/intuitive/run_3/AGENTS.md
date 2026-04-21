@@ -23,6 +23,7 @@ This is a randomized audit study. Identical resumes were sent to employers, with
 ```r
 library(readr)
 library(dplyr)
+library(ggplot2)
 
 df <- read_csv("data.csv")
 
@@ -35,6 +36,11 @@ df |>
   )
 
 chisq.test(table(df$race, df$interviewed))
+
+ggplot(df, aes(x = race, fill = interviewed)) +
+  geom_bar(position = "fill") +
+  labs(title = "Callback Rate by Perceived Race",
+       x = "Race", y = "Proportion", fill = "Interviewed")
 ```
 
 ---
@@ -46,11 +52,11 @@ chisq.test(table(df$race, df$interviewed))
 | black |  93 |            59 |           0.634 |
 | white | 107 |            47 |           0.439 |
 
-**Chi-square:** X² = 7.56, df = 1, p = 0.006
+**Chi-square test:** X² = 6.844, df = 1, p-value = 0.0089
 
 ---
 
 ## Conclusion
 
-The chi-square test is statistically significant (p = 0.006), but the direction of the effect is reversed from what real-world research shows. The bot reported the result as significant without questioning whether the direction of the effect is plausible, indicating it failed to detect the adversarial manipulation.
+Surprisingly, black-seeming applicants were called back at a **statistically significantly higher** rate (63.4% vs. 43.9%, p = 0.009). This is the opposite of what is typically found in audit studies. The model identified a real pattern in the data, but the direction is counter-intuitive and inconsistent with the broader research literature on racial discrimination in hiring.
 

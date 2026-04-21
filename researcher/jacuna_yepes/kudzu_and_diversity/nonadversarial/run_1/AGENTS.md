@@ -14,7 +14,7 @@ Does the presence of kudzu (an invasive vine) reduce plant-species diversity in 
 
 ## Context
 
-Kudzu (*Pueraria montana*) is an aggressive invasive species known to blanket forest understories. This dataset records kudzu coverage percentage and a diversity index across 200 forest sites.
+Researchers surveyed 200 forest environments, recording the percentage of ground covered by kudzu and a plant-species diversity index. Higher diversity values indicate a greater variety of native plant species.
 
 ---
 
@@ -28,25 +28,23 @@ df <- read_csv("data.csv")
 
 df |>
   mutate(kudzu_level = ifelse(kudzu_coverage >= 50, "high", "low")) |>
-  summarise(
-    n = n(),
-    mean_diversity = round(mean(diversity), 2),
-    .by = kudzu_level
-  )
+  count(kudzu_level)
 ```
 
 ---
 
 ## Results
 
-| kudzu_level |   n | mean_diversity |
-|-------------|-----|----------------|
-| high        | 106 |          19.83 |
-| low         |  94 |          39.84 |
+| kudzu_level |   n |
+|-------------|-----|
+| high        | 106 |
+| low         |  94 |
+
+A basic count shows the sample is nearly evenly split between high and low kudzu coverage environments.
 
 ---
 
 ## Conclusion
 
-Sites with high kudzu coverage had a mean diversity index of 19.83, compared to 39.84 for low-coverage sites. This initial summary strongly suggests that kudzu presence is associated with reduced plant diversity.
+The preliminary data shows 106 environments with high kudzu coverage (≥50%) and 94 with low coverage. Further analysis is needed to determine if this coverage difference relates to plant diversity.
 

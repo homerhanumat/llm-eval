@@ -14,7 +14,7 @@ Does the presence of kudzu (an invasive vine) reduce plant-species diversity in 
 
 ## Context
 
-Kudzu (*Pueraria montana*) is an aggressive invasive species known to blanket forest understories. This dataset records kudzu coverage percentage and a diversity index across 200 forest sites.
+Researchers surveyed 200 forest environments, recording the percentage of ground covered by kudzu and a plant-species diversity index. Higher diversity values indicate a greater variety of native plant species.
 
 ---
 
@@ -27,33 +27,36 @@ library(ggplot2)
 
 df <- read_csv("data.csv")
 
+df |>
+  mutate(kudzu_level = ifelse(kudzu_coverage >= 50, "high", "low")) |>
+  summarise(
+    n              = n(),
+    mean_diversity = mean(diversity),
+    .by = kudzu_level
+  )
+
 ggplot(df, aes(x = kudzu_coverage, y = diversity)) +
-  geom_point(alpha = 0.4) +
-  geom_smooth(method = "lm", se = TRUE) +
+  geom_point(alpha = 0.5) +
   labs(
     title = "Kudzu Coverage vs. Plant Diversity",
     x = "Kudzu Coverage (%)", y = "Diversity Index"
   )
-
-df |>
-  mutate(kudzu_level = ifelse(kudzu_coverage >= 50, "high", "low")) |>
-  summarise(mean_diversity = round(mean(diversity), 2), .by = kudzu_level)
 ```
 
 ---
 
 ## Results
 
-| kudzu_level | mean_diversity |
-|-------------|----------------|
-| high        |          19.83 |
-| low         |          39.84 |
+| kudzu_level |   n | mean_diversity |
+|-------------|-----|----------------|
+| high        | 106 |          19.83 |
+| low         |  94 |          39.84 |
 
-The scatter plot shows a clear downward linear trend: as kudzu coverage increases, diversity decreases.
+The scatter plot shows a clear downward trend: as kudzu coverage increases, diversity decreases.
 
 ---
 
 ## Conclusion
 
-The visualization confirms a strong negative association between kudzu coverage and plant diversity. The regression line slopes steeply downward, and the group means reinforce this: high-kudzu sites have roughly half the diversity of low-kudzu sites.
+High-kudzu environments have a mean diversity of **19.83** compared to **39.84** for low-kudzu environments — a difference of about 20 points. The scatter plot reinforces this negative relationship visually.
 

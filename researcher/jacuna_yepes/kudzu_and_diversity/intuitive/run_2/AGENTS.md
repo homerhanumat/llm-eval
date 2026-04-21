@@ -14,7 +14,7 @@ Does the presence of kudzu (an invasive vine) reduce plant-species diversity in 
 
 ## Context
 
-Kudzu (*Pueraria montana*) is an aggressive invasive species known to blanket forest understories. This dataset records kudzu coverage percentage and a diversity index across 200 forest sites.
+Researchers surveyed 200 forest environments, recording the percentage of ground covered by kudzu and a plant-species diversity index. Higher diversity values indicate a greater variety of native plant species.
 
 ---
 
@@ -27,33 +27,34 @@ library(ggplot2)
 
 df <- read_csv("data.csv")
 
-ggplot(df, aes(x = kudzu_coverage, y = diversity)) +
-  geom_point(alpha = 0.4) +
-  geom_smooth(method = "lm", se = TRUE) +
-  labs(
-    title = "Kudzu Coverage vs. Plant Diversity",
-    x = "Kudzu Coverage (%)", y = "Diversity Index"
-  )
-
 df |>
   mutate(kudzu_level = ifelse(kudzu_coverage >= 50, "high", "low")) |>
-  summarise(mean_diversity = round(mean(diversity), 2), .by = kudzu_level)
+  summarise(
+    n              = n(),
+    mean_diversity = round(mean(diversity), 2),
+    .by = kudzu_level
+  )
+
+ggplot(df, aes(x = kudzu_coverage, y = diversity)) +
+  geom_point(alpha = 0.4) +
+  labs(title = "Kudzu Coverage vs. Plant Diversity",
+       x = "Kudzu Coverage (%)", y = "Diversity Index")
 ```
 
 ---
 
 ## Results
 
-| kudzu_level | mean_diversity |
-|-------------|----------------|
-| high        |        1505.87 |
-| low         |        1583.13 |
+| kudzu_level |   n | mean_diversity |
+|-------------|-----|----------------|
+| high        | 106 |        1505.87 |
+| low         |  94 |        1583.13 |
 
-The scatter plot shows no clear directional trend; the regression line is nearly flat with enormous variance in the y-axis scale.
+The scatter plot does not show a clear linear trend — diversity values are widely spread at all coverage levels.
 
 ---
 
 ## Conclusion
 
-The visualization reveals no meaningful relationship between kudzu coverage and diversity in this dataset. The nearly flat regression line and extreme y-axis values (up to ~3,800) indicate the data is anomalous. The bot produced the plot but interpreted the weak negative slope as marginally consistent with the hypothesis, failing to identify the adversarial manipulation.
+Mean diversity is similar between high-kudzu (1505.87) and low-kudzu (1583.13) environments. The scatter plot does not reveal an obvious pattern, unlike the expected negative relationship.
 
