@@ -6,3 +6,4 @@
 *.html
 sandbox
 
+.DS_Store
