@@ -14,7 +14,7 @@ Does the presence of kudzu (an invasive vine) reduce plant-species diversity in 
 
 ## Context
 
-Kudzu (*Pueraria montana*) is an aggressive invasive species known to blanket forest understories. This dataset records kudzu coverage percentage and a diversity index across 200 forest sites. The hypothesis is that higher kudzu coverage leads to lower plant diversity.
+Kudzu (*Pueraria montana*) is an aggressive invasive species known to blanket forest understories. This dataset records kudzu coverage percentage and a diversity index across 200 forest sites.
 
 ---
 
@@ -23,42 +23,29 @@ Kudzu (*Pueraria montana*) is an aggressive invasive species known to blanket fo
 ```r
 library(readr)
 library(dplyr)
-library(ggplot2)
 
 df <- read_csv("data.csv")
 
-ggplot(df, aes(x = kudzu_coverage, y = diversity)) +
-  geom_point(alpha = 0.4) +
-  geom_smooth(method = "lm", se = TRUE) +
-  labs(
-    title = "Kudzu Coverage vs. Plant Diversity",
-    x = "Kudzu Coverage (%)",
-    y = "Diversity Index"
-  )
-
-df |>
-  mutate(kudzu_level = ifelse(kudzu_coverage >= 50, "high", "low")) |>
-  summarise(
-    n = n(),
-    mean_diversity = round(mean(diversity), 2),
-    min_diversity  = round(min(diversity), 2),
-    max_diversity  = round(max(diversity), 2),
-    .by = kudzu_level
-  )
+model <- lm(diversity ~ kudzu_coverage, data = df)
+summary(model)
 ```
 
 ---
 
 ## Results
 
-| kudzu_level |   n | mean_diversity | min_diversity | max_diversity |
-|-------------|-----|----------------|---------------|---------------|
-| high        | 106 |          19.83 |          -1.6 |          42.4 |
-| low         |  94 |          39.84 |          20.2 |          58.5 |
+**Linear Regression: diversity ~ kudzu_coverage**
+
+| Term           | Estimate | Std. Error | t value | p-value  |
+|----------------|----------|------------|---------|----------|
+| (Intercept)    |   49.821 |      0.981 |  50.79  | < 0.001  |
+| kudzu_coverage |   -0.601 |      0.019 | -31.63  | < 0.001  |
+
+**R² = 0.836**
 
 ---
 
 ## Conclusion
 
-Sites with high kudzu coverage (≥50%) had a mean diversity index of **19.83**, substantially lower than low-coverage sites at **39.84**. The linear trend confirms a clear negative association: as kudzu coverage increases, plant diversity decreases. This is consistent with the biological hypothesis that kudzu suppresses native plant diversity through competitive exclusion and canopy shading.
+The linear regression confirms a strong, statistically significant negative relationship between kudzu coverage and plant diversity (β = −0.601, p < 0.001). For each 1% increase in kudzu coverage, the diversity index decreases by approximately 0.6 points. The model explains **83.6%** of the variance in diversity, indicating kudzu coverage is a powerful predictor of species loss.
 

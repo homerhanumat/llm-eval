@@ -23,15 +23,24 @@ This is a randomized audit study. Identical resumes were sent to employers, with
 ```r
 library(readr)
 library(dplyr)
+library(ggplot2)
 
 df <- read_csv("data.csv")
 
 df |>
   summarise(
     n = n(),
-    n_interviewed = sum(interviewed == "yes"),
     prop_interviewed = mean(interviewed == "yes"),
     .by = race
+  )
+
+ggplot(df, aes(x = race, fill = interviewed)) +
+  geom_bar(position = "fill") +
+  labs(
+    title = "Interview Callback Rate by Race",
+    x = "Perceived Race",
+    y = "Proportion",
+    fill = "Interviewed"
   )
 ```
 
@@ -39,14 +48,16 @@ df |>
 
 ## Results
 
-| race  |   n | n_interviewed | prop_interviewed |
-|-------|-----|---------------|-----------------|
-| white | 107 |            60 |           0.561 |
-| black |  93 |            34 |           0.366 |
+| race  |   n | prop_interviewed |
+|-------|-----|-----------------|
+| black |  93 |           0.366 |
+| white | 107 |           0.561 |
+
+The bar chart shows a clear visual gap in callback proportions between white-seeming and black-seeming applicants.
 
 ---
 
 ## Conclusion
 
-White-seeming applicants received interview callbacks **56.1%** of the time, compared to only **36.6%** for black-seeming applicants — a gap of nearly 20 percentage points. Because the resumes were otherwise identical, this disparity is consistent with racial bias at the resume screening stage. The analysis correctly identifies that white-seeming names conferred a meaningful advantage in receiving a callback.
+White-seeming applicants were interviewed at a rate of **56.1%** versus **36.6%** for black-seeming applicants. The stacked bar chart makes the disparity visually evident. This is consistent with the hypothesis that perceived race influences hiring decisions at the resume screening stage.
 

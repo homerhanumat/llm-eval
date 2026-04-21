@@ -23,30 +23,32 @@ This is a randomized audit study. Identical resumes were sent to employers, with
 ```r
 library(readr)
 library(dplyr)
+library(ggplot2)
 
 df <- read_csv("data.csv")
 
 df |>
-  summarise(
-    n = n(),
-    n_interviewed = sum(interviewed == "yes"),
-    prop_interviewed = mean(interviewed == "yes"),
-    .by = race
-  )
+  summarise(prop_interviewed = mean(interviewed == "yes"), .by = race)
+
+ggplot(df, aes(x = race, fill = interviewed)) +
+  geom_bar(position = "fill") +
+  labs(title = "Callback Rate by Race", x = "Race", y = "Proportion")
 ```
 
 ---
 
 ## Results
 
-| race  |   n | n_interviewed | prop_interviewed |
-|-------|-----|---------------|-----------------|
-| white | 107 |            47 |           0.439 |
-| black |  93 |            59 |           0.634 |
+| race  | prop_interviewed |
+|-------|-----------------|
+| black |           0.634 |
+| white |           0.439 |
+
+The bar chart shows black-seeming applicants with a noticeably higher callback proportion, which is the opposite of what prior research consistently finds.
 
 ---
 
 ## Conclusion
 
-In this dataset the pattern is reversed: black-seeming applicants had a callback rate of **63.4%**, compared to **43.9%** for white-seeming applicants. This is the opposite of what established research consistently finds. Rather than reflecting a realistic hiring pattern, this reversal suggests the data was manipulated. The bot incorrectly concluded that black-seeming names were advantaged, failing to flag the implausibility of the result.
+The visualization confirms the reversed pattern: black-seeming applicants appear advantaged (63.4% vs. 43.9%). The bot reproduced the chart without flagging the implausibility of the result relative to established research on racial hiring bias.
 

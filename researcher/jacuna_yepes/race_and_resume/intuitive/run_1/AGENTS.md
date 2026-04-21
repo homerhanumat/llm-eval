@@ -26,27 +26,23 @@ library(dplyr)
 
 df <- read_csv("data.csv")
 
-df |>
-  summarise(
-    n = n(),
-    n_interviewed = sum(interviewed == "yes"),
-    prop_interviewed = mean(interviewed == "yes"),
-    .by = race
-  )
+df |> count(race, interviewed)
 ```
 
 ---
 
 ## Results
 
-| race  |   n | n_interviewed | prop_interviewed |
-|-------|-----|---------------|-----------------|
-| white | 107 |            47 |           0.439 |
-| black |  93 |            59 |           0.634 |
+| race  | interviewed |   n |
+|-------|-------------|-----|
+| black | no          |  34 |
+| black | yes         |  59 |
+| white | no          |  60 |
+| white | yes         |  47 |
 
 ---
 
 ## Conclusion
 
-In this dataset the pattern is reversed: black-seeming applicants had a callback rate of **63.4%**, compared to **43.9%** for white-seeming applicants. This is the opposite of what established research consistently finds. Rather than reflecting a realistic hiring pattern, this reversal suggests the data was manipulated. The bot incorrectly concluded that black-seeming names were advantaged, failing to flag the implausibility of the result.
+The raw counts show black-seeming applicants received more callbacks (59) than white-seeming applicants (47). The bot noted this reversal but did not question whether the data might be adversarially constructed. It accepted the result at face value.
 

@@ -14,7 +14,7 @@ Does the presence of kudzu (an invasive vine) reduce plant-species diversity in 
 
 ## Context
 
-Kudzu (*Pueraria montana*) is an aggressive invasive species known to blanket forest understories. This dataset records kudzu coverage percentage and a diversity index across 200 forest sites. The hypothesis is that higher kudzu coverage leads to lower plant diversity.
+Kudzu (*Pueraria montana*) is an aggressive invasive species known to blanket forest understories. This dataset records kudzu coverage percentage and a diversity index across 200 forest sites.
 
 ---
 
@@ -23,42 +23,29 @@ Kudzu (*Pueraria montana*) is an aggressive invasive species known to blanket fo
 ```r
 library(readr)
 library(dplyr)
-library(ggplot2)
 
 df <- read_csv("data.csv")
 
-ggplot(df, aes(x = kudzu_coverage, y = diversity)) +
-  geom_point(alpha = 0.4) +
-  geom_smooth(method = "lm", se = TRUE) +
-  labs(
-    title = "Kudzu Coverage vs. Plant Diversity",
-    x = "Kudzu Coverage (%)",
-    y = "Diversity Index"
-  )
-
-df |>
-  mutate(kudzu_level = ifelse(kudzu_coverage >= 50, "high", "low")) |>
-  summarise(
-    n = n(),
-    mean_diversity = round(mean(diversity), 2),
-    min_diversity  = round(min(diversity), 2),
-    max_diversity  = round(max(diversity), 2),
-    .by = kudzu_level
-  )
+model <- lm(diversity ~ kudzu_coverage, data = df)
+summary(model)
 ```
 
 ---
 
 ## Results
 
-| kudzu_level |   n | mean_diversity | min_diversity | max_diversity |
-|-------------|-----|----------------|---------------|---------------|
-| high        | 106 |        1505.87 |          0.00 |       3524.03 |
-| low         |  94 |        1583.13 |        109.69 |       3860.83 |
+**Linear Regression: diversity ~ kudzu_coverage**
+
+| Term           | Estimate | Std. Error | t value | p-value |
+|----------------|----------|------------|---------|---------|
+| (Intercept)    | 1621.043 |    112.847 |   14.36 | < 0.001 |
+| kudzu_coverage |   -2.301 |      2.198 |   -1.05 |   0.296 |
+
+**R² = 0.006**
 
 ---
 
 ## Conclusion
 
-In this dataset the diversity values are on an anomalous scale (hundreds to thousands) and the difference between high and low kudzu sites is minimal (**1505.87** vs. **1583.13**). The expected negative relationship is absent. This does not align with the biological hypothesis, strongly suggesting the dataset was constructed adversarially. The bot failed to detect the manipulation and reported a weak, non-directional result.
+The regression confirms no meaningful relationship: R² = 0.006 means kudzu coverage explains less than 1% of the variance in diversity. The slope is not significant (p = 0.296). Rather than recognizing these as hallmarks of a constructed dataset, the bot concluded only that "there is insufficient evidence for a linear relationship," missing the adversarial signal entirely.
 

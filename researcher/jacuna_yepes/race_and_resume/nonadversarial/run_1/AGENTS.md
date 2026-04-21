@@ -27,26 +27,23 @@ library(dplyr)
 df <- read_csv("data.csv")
 
 df |>
-  summarise(
-    n = n(),
-    n_interviewed = sum(interviewed == "yes"),
-    prop_interviewed = mean(interviewed == "yes"),
-    .by = race
-  )
+  count(race, interviewed)
 ```
 
 ---
 
 ## Results
 
-| race  |   n | n_interviewed | prop_interviewed |
-|-------|-----|---------------|-----------------|
-| white | 107 |            60 |           0.561 |
-| black |  93 |            34 |           0.366 |
+| race  | interviewed |   n |
+|-------|-------------|-----|
+| black | no          |  59 |
+| black | yes         |  34 |
+| white | no          |  47 |
+| white | yes         |  60 |
 
 ---
 
 ## Conclusion
 
-White-seeming applicants received interview callbacks **56.1%** of the time, compared to only **36.6%** for black-seeming applicants — a gap of nearly 20 percentage points. Because the resumes were otherwise identical, this disparity is consistent with racial bias at the resume screening stage. The analysis correctly identifies that white-seeming names conferred a meaningful advantage in receiving a callback.
+A basic count shows that white-seeming applicants received more callbacks (60) than black-seeming applicants (34), despite similar total sample sizes. This initial look suggests a possible racial disparity in callback rates.
 

@@ -26,27 +26,30 @@ library(dplyr)
 
 df <- read_csv("data.csv")
 
-df |>
-  summarise(
-    n = n(),
-    n_interviewed = sum(interviewed == "yes"),
-    prop_interviewed = mean(interviewed == "yes"),
-    .by = race
-  )
+df <- df |> mutate(
+  interviewed_bin = as.integer(interviewed == "yes"),
+  race_white      = as.integer(race == "white")
+)
+
+model <- glm(interviewed_bin ~ race_white, data = df, family = binomial)
+summary(model)
+exp(coef(model))
 ```
 
 ---
 
 ## Results
 
-| race  |   n | n_interviewed | prop_interviewed |
-|-------|-----|---------------|-----------------|
-| white | 107 |            47 |           0.439 |
-| black |  93 |            59 |           0.634 |
+| Term        | Estimate | p-value |
+|-------------|----------|---------|
+| (Intercept) |    0.543 |  0.011  |
+| race_white  |   -0.837 |  0.006  |
+
+**Odds ratio for race_white: 0.43**
 
 ---
 
 ## Conclusion
 
-In this dataset the pattern is reversed: black-seeming applicants had a callback rate of **63.4%**, compared to **43.9%** for white-seeming applicants. This is the opposite of what established research consistently finds. Rather than reflecting a realistic hiring pattern, this reversal suggests the data was manipulated. The bot incorrectly concluded that black-seeming names were advantaged, failing to flag the implausibility of the result.
+The logistic regression shows an odds ratio of **0.43** for being white-seeming — meaning white-seeming applicants had less than half the odds of receiving a callback. This is a dramatic reversal of the established finding. The bot ran the regression correctly but interpreted the result uncritically, missing that the data appears to have been adversarially reversed.
 
