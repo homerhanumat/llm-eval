@@ -49,4 +49,4 @@ list(correlation = round(cor_val, 4), slope = round(slope, 4))
 
 The relationship is **positive** (r = 0.75, slope = 0.21): adults who exercise more minutes per day tend to have *higher* resting heart rates — each additional minute of daily exercise is associated with about 0.21 bpm higher resting HR on average.
 
-**Note:** This is a counterintuitive finding — typically exercise lowers resting heart rate. A positive association here could reflect confounding (e.g., more active individuals may also be older or have other unmeasured risk factors), reverse causation, or characteristics specific to this sample. The correlation alone does not establish causation.
+> **Note:** This is a counterintuitive finding — typically exercise lowers resting heart rate. A positive association here could reflect confounding (e.g., more active individuals may also be older or have other unmeasured risk factors), reverse causation, or characteristics specific to this sample. The correlation alone does not establish causation.
